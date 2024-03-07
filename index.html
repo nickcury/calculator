@@ -20,6 +20,30 @@
     <p id="result">Result: </p>
 
     <script>
+        // Function to set a cookie
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + value + expires + "; path=/";
+        }
+
+        // Function to get a cookie value
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // Function to add numbers
         function addNumbers() {
             var num1 = parseFloat(document.getElementById('num1').value);
             var num2 = parseFloat(document.getElementById('num2').value);
@@ -27,10 +51,25 @@
             if (!isNaN(num1) && !isNaN(num2)) {
                 var sum = num1 + num2;
                 document.getElementById('result').innerText = 'Result: ' + sum;
+
+                // Save the numbers in cookies
+                setCookie('num1', num1, 7);
+                setCookie('num2', num2, 7);
             } else {
                 document.getElementById('result').innerText = 'Please enter valid numbers.';
             }
         }
+
+        // Retrieve numbers from cookies on page load
+        window.onload = function () {
+            var savedNum1 = getCookie('num1');
+            var savedNum2 = getCookie('num2');
+
+            if (savedNum1 !== null && savedNum2 !== null) {
+                document.getElementById('num1').value = savedNum1;
+                document.getElementById('num2').value = savedNum2;
+            }
+        };
     </script>
 
 </body>
